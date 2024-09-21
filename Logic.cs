@@ -124,6 +124,7 @@ namespace process_tamer_win
                         logAction?.Invoke($"match: name={name} path={path} config={c.Name}");
                     }
                     TameProcess(process, name, path, c.Priority, c.Affinity);
+                    break;
                 }
             }
             
