@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -15,10 +16,18 @@ namespace process_tamer_win
     {
         private Logic? logic = null;
         private readonly List<string> logLines = new List<string>();
-        
+        private readonly Mutex mutex;
 
         public MainWindow()
         {
+            bool createdNew;
+            mutex = new Mutex(true, AppConfig.APP_MUTEX_KEY, out createdNew);
+            if (!createdNew)
+            {
+                MessageBox.Show("すでに起動しています。起動を中止します。", AppConfig.APP_TITLE, MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(255);
+            }
+
             InitializeComponent();
             this.Title = AppConfig.APP_TITLE;
 
@@ -129,6 +138,7 @@ namespace process_tamer_win
         {
             logic?.Dispose();
             logic = null;
+            mutex.ReleaseMutex();
             WriteLog("shutdown");
         }
     }
