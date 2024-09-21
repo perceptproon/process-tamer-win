@@ -1,0 +1,36 @@
+# process-tamer-win 設定ファイルサンプル
+#  実際の設定はこのファイルではなくこのファイルをコピーして作成した"config.yaml"にて行う。
+# 設定手順
+#  1: タスクマネージャなどで対象プロセスのファイル名や行いたい操作を決める
+#  2: それをtargetsに設定していく
+#  3: debugLevelを1、intervalを大きな値にして、期待通りに優先度などが置き換わるのか検証
+#  4: うまくいったらdebugLevelを0、intervalを適正地にしてWindowsスタートアップに追加
+
+# スキャン間隔(ms)
+interval: 10000
+
+# デバッグ機能
+# 設定可能: 0=通常運用モード / 1=基本的なデバッグ出力 / 2=最大限のデバッグ出力
+debugLevel: 1
+
+# 対象設定 同じプロセスが複数回該当した場合、最後の設定が優先される。ただ、その過程で複数回設定が変わるのでそのような設定法は推奨しない。
+targets:
+-
+  # 設定名 動作に影響は与えない
+  name: test target 1
+  # 対象プロセスのファイル名 正規表現で
+  pathRegex: .+Notepad\.exe$
+  # 設定時には指定したプロセス優先度へ変更。この設定を行わない場合は削除
+  # 設定可能: Idle / BelowNormal / Normal / AboveNormal / High / RealTime
+  priority: BelowNormal
+  # 設定時には指定したCPU Affinityをセット。この設定を行わない場合は削除
+  # 設定可能: CPU1のみ=1 / CPU2のみ=2 / CPU1-2のみ=3 / CPU3のみ=4 / ...
+  affinity: 1
+-
+  # 設定名 動作に影響は与えない
+  name: test target 2
+  # 対象プロセスのファイル名 正規表現で
+  pathRegex: .+process-tamer-win\.exe$
+  # 設定時には指定したプロセス優先度へ変更。この設定を行わない場合は削除
+  # 設定可能: Idle / BelowNormal / Normal / AboveNormal / High / RealTime
+  priority: Idle
